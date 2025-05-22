@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BF Mirror – Breach File Access By Sanction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      background-color: #1e1e1e;
+      color: #aaaeaa;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+    }
+
+    header img {
+      max-height: 150px;
+      height: auto;
+      width: auto;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding: 20px 0;
+      border-top: 1px solid #333;
+      text-align: center;
+      color: #777;
+    }
+
+    footer .social-icons a {
+      margin: 0 10px;
+      color: #BB9F7A;
+      font-size: 18px;
+      text-decoration: none;
+    }
+
+    footer .social-icons a:hover {
+      color: #fff;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    textarea:focus, input:focus {
+      outline: none;
+    }
+
+    #search-bar {
+      background: #2e2e2e;
+      color: #aaaeaa;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    #search-btn {
+      background: #444;
+      color: #aaaeaa;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+
+    a {
+      color: #BB9F7A;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    #status-check {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #333;
+      background: #2c2c2c;
+      color: #ccc;
+      border-radius: 8px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .modal-box {
+      background: #2c2c2c;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      color: #BB9F7A;
+    }
+
+    .progress-bar-container {
+      background: #444;
+      height: 25px;
+      border-radius: 5px;
+      margin-top: 15px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: #BB9F7A;
+      border-radius: 5px;
+    }
+
+    .cancel-button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #444;
+      color: #BB9F7A;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    
+      .search-container {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        width: 100%;
+        max-width: 100%;
+      }
+    
+      #search-bar {
+        width: 70%;
+        flex: 1 1 auto;
+      }
+    
+      #search-btn {
+        white-space: nowrap;
+        flex: 0 0 auto;
+      }
+    
+      .modal-box {
+        margin: 10px;
+        width: 90%;
+      }
+    
+      .table-wrapper table,
+      .table-wrapper thead,
+      .table-wrapper tbody,
+      .table-wrapper th,
+      .table-wrapper td,
+      .table-wrapper tr {
+        display: block;
+        width: auto;
+      }
+    
+      .table-wrapper thead {
+        display: none;
+      }
+    
+      .table-wrapper tr {
+        margin-bottom: 15px;
+        border: 1px solid #444;
+        border-radius: 8px;
+        background-color: #2e2e2e;
+        padding: 10px;
+      }
+    
+      .table-wrapper td {
+        padding: 8px 10px;
+        text-align: left;
+        position: relative;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+    
+      .table-wrapper td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #888;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .table-wrapper td a {
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        display: inline-block;
+        max-width: 100%;
+      }    
+    }
+
+
+    @media (max-width: 480px) {
+      body {
+        font-size: 14px;
+      }
+
+      .search-container {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+    
+      #search-bar {
+        width: 75%;
+        max-width: 280px;
+      }
+    
+      #search-btn {
+        width: auto;
+        padding: 8px 14px;
+      }
+
+      .progress-bar-container {
+        height: 20px;
+      }
+
+      .cancel-button {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+      }
+
+      footer .social-icons a {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://tlo.sh/imgs/v3.png" alt="Sanction Logo" style="height: 200px;">
+    <div class="search-container">
+      <input type="text" id="search-bar" placeholder="Search files...">
+      <button id="search-btn">Search</button>
+    </div>
+  </header>
+
+  <section id="status-check">
+    <h3 style="color:#BB9F7A;">System Status</h3>
+    <div id="status-box">Checking status...</div>
+  </section>
+
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Name</th><th>Size</th><th>Modified</th></tr></thead>
+      <tbody id="file-table"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <div class="social-icons">
+      <a href="https://t.me/SanctionInfoBot" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+      <a href="mailto:admin@tlo.sh"><i class="fas fa-envelope"></i></a>
+      <a href="https://tlo.sh/frontend/tos"><i class="fa-solid fa-circle-info"></i></a>
+    </div>
+    <p>© 2023–2025 Sanction™</p>
+    <p style="margin-top: -10px;">Powered By <a href="https://cdn.ransomed.biz/" target="_blank">cdn.ransomed.biz</a></p>
+  </footer>
+
+<script>
+let allFiles = [];
+let filesFetched = false;
+
+function sanitizeInput(str) {
+  return str.replace(/[^\w\s\-_.()+]/g, '');
+}
+
+function renderTable(data) {
+  const table = document.getElementById("file-table");
+  table.innerHTML = "";
+  if (data.length === 0) {
+    table.innerHTML = `<tr><td colspan="3" style="text-align:center;">No results found.</td></tr>`;
+    return;
+  }
+  data.forEach(file => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td data-label="Name">
+        <a href="#" class="file-link" data-encoded="${file.Encoded}" data-name="${file.Name}">
+          <i class="fas fa-file-excel"></i> ${file.Name}
+        </a>
+      </td>
+      <td data-label="Size">${file.Size}</td>
+      <td data-label="Modified">${file.Modified}</td>
+    `;
+    table.appendChild(row);
+  });
+}
+
+function filterTable(query) {
+  renderTable(allFiles.filter(f => f.Name.toLowerCase().includes(query.toLowerCase())));
+}
+
+document.getElementById("search-btn").addEventListener("click", () => {
+  const input = document.getElementById("search-bar").value.trim();
+  const sanitized = sanitizeInput(input);
+  filterTable(sanitized);
+});
+
+document.getElementById("search-bar").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    document.getElementById("search-btn").click();
+  }
+});
+
+document.addEventListener("click", e => {
+  const link = e.target.closest(".file-link");
+  if (link) {
+    e.preventDefault();
+    const encoded = link.dataset.encoded;
+    const name = link.dataset.name;
+    createDownloadModal(name, encoded);
+  }
+});
+
+function createDownloadModal(name, encoded) {
+  if (document.getElementById("download-modal")) return;
+  const modal = document.createElement("div");
+  modal.id = "download-modal";
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `
+    <div class="modal-box">
+      <img src="https://tlo.sh/imgs/v3.png" style="height: 250px; margin-bottom: -65px;">
+      <h2>Preparing download...</h2>
+      <p id="countdown-text">Your download will begin in <strong>15</strong> seconds</p>
+      <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar-fill"></div>
+      </div>
+      <p id="progress-percent">0%</p>
+      <button id="cancel-button" class="cancel-button">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  let timeLeft = 15;
+  const countdownText = modal.querySelector("#countdown-text");
+  const progressBar = modal.querySelector("#progress-bar");
+  const progressPercent = modal.querySelector("#progress-percent");
+  const cancelButton = modal.querySelector("#cancel-button");
+
+  const interval = setInterval(() => {
+    timeLeft--;
+    const percent = Math.round(((15 - timeLeft) / 15) * 100);
+    countdownText.innerHTML = `Your download will begin in <strong>${timeLeft}</strong> seconds`;
+    progressBar.style.width = `${percent}%`;
+    progressPercent.textContent = `${percent}%`;
+
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      document.body.removeChild(modal);
+
+      const primaryUrl = `/files/download?file=${encoded}`;
+      const fallbackUrl = `/cdn/?download&file=${encoded}`;
+      const thirdFallback = `https://cdn.tlo.sh/?download&file=${encoded}`;
+
+      fetch(primaryUrl, { method: 'HEAD' })
+        .then(res => {
+          if (res.status === 502) throw new Error("Primary failed");
+          return primaryUrl;
+        })
+        .catch(() => {
+          return fetch(fallbackUrl, { method: 'HEAD' })
+            .then(res => {
+              if (res.status === 502) throw new Error("Fallback failed");
+              return fallbackUrl;
+            })
+            .catch(() => thirdFallback);
+        })
+        .then(finalUrl => {
+          const a = document.createElement("a");
+          a.href = finalUrl;
+          a.download = name;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+    }
+  }, 1000);
+
+  cancelButton.addEventListener("click", () => {
+    clearInterval(interval);
+    document.body.removeChild(modal);
+  });
+}
+
+function fetchFilesOnce() {
+  fetch('/files/bf-parse')
+    .then(res => res.json())
+    .then(data => {
+      allFiles = data;
+      renderTable(allFiles);
+      filesFetched = true;
+    })
+    .catch(() => {
+      document.getElementById("file-table").innerHTML = `<tr><td colspan="3" style="text-align:center;">Failed to load files.</td></tr>`;
+    });
+}
+
+const audioOnline = new Audio('https://tlo.sh/imgs/online.ogg');
+const audioOffline = new Audio('https://tlo.sh/imgs/offline.ogg');
+
+function playSound(audioClip) {
+  audioClip.currentTime = 0;
+  audioClip.play().catch((e) => {
+    console.warn("Autoplay blocked or failed:", e);
+  });
+}
+
+let previouslyOffline = false;
+
+function checkUptimeStatusLoop() {
+  fetch('/files/uptime')
+    .then(res => res.json())
+    .then(data => {
+      const box = document.getElementById("status-box");
+      if (data.status === "OK") {
+        box.innerHTML = `<i class="fas fa-check-circle" style="color:#5cb85c;"></i> API Status: <strong style="color:#5cb85c;">Online</strong>`;
+        if (!filesFetched) fetchFilesOnce();
+        if (previouslyOffline) {
+          playSound(audioOnline);
+          previouslyOffline = false;
+        }
+      } else {
+        box.innerHTML = `<i class="fas fa-exclamation-circle" style="color:#BB9F7A;"></i> API Status: <strong style="color:#BB9F7A;">Degraded</strong>`;
+        if (!previouslyOffline) {
+          playSound(audioOffline);
+        }
+        previouslyOffline = true;
+      }
+    })
+    .catch(() => {
+      const box = document.getElementById("status-box");
+      box.innerHTML = `<i class="fas fa-times-circle" style="color:#BB9F7A;"></i> <strong style="color:#BB9F7A;">API Offline</strong><br>Site is experiencing a heavy load.`;
+      if (!previouslyOffline) {
+        playSound(audioOffline);
+      }
+      previouslyOffline = true;
+    })
+    .finally(() => {
+      setTimeout(checkUptimeStatusLoop, 30000);
+    });
+}
+
+checkUptimeStatusLoop();
+</script>
+</body>
+</html>

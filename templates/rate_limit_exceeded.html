@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<meta property="og:title" content="RateLimit: Stop being a greedy bitch" />
+<meta property="og:type" content="TLO.SH" />
+<meta property="og:url" content="http://tlo.sh" />
+<meta property="og:image" content="https://tlo.sh/imgs/tlo-t.png" />
+<meta property="og:description" content="This person is a greedy bitch trying to take the fun from others." />
+<link rel="icon" href="https://tlo.sh/imgs/tlo-c.png">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <title>Rate Limit Exceeded</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2a2a2a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #333;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            color: #BB9F7A;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #aaaeaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #aaaeaa;
+            margin-bottom: 1.5rem;
+        }
+        .button {
+            background-color: #444;
+            color: #aaaeaa;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #E5BC99;
+        }
+        .icon {
+            font-size: 3rem;
+            color: #BB9F7A;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">⚠️</div>
+        <h1>Rate Limit Exceeded</h1>
+        <p>You've made too many requests. Please wait a moment before trying again.</p>
+        <div class="timer">
+            <span id="countdown">60</span> seconds remaining
+        </div>
+        <a href="/files" class="button"><i class="fa-solid fa-house"></i> Return Home</a>
+    </div>
+    <script>
+        const countdown = document.getElementById('countdown');
+        let timeLeft = 60;
+        
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdown.textContent = timeLeft;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                window.location.reload();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
